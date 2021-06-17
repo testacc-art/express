@@ -12,7 +12,13 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-
+    - name: Initial install
+      run: npm install
+    - name: Clean
+      shell: pwsh
+      run: |
+        Remove-Item node_modules -Force -Recurse
+        npm cache clean --force
     - uses: dmitry-shibanov/setup-node@add-caching
       with:
         node-version: ${{ matrix.version }}
