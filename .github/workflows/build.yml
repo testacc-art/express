@@ -12,14 +12,10 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Generate yarn file
-      run: npm install
-    - name: Remove dependencies
-      shell: pwsh
-      run: Remove-Item node_modules -Force -Recurse
     - uses: akv-platform/setup-node@add-caching-for-node-dependencies
       with:
         node-version: ${{ matrix.version }}
+        cache: npm
     - name: Node version
       shell: pwsh
       run: node --version
@@ -30,9 +26,3 @@ jobs:
       run: npm --version
     - name: Install dependencies
       run: npm install
-    - name: upload screenshot
-      if: ${{ always() }}
-      uses: actions/upload-artifact@master
-      with:
-        name: package-lock.json
-        path: package-lock.json
