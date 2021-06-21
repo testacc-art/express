@@ -7,22 +7,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        operating-system: [ubuntu-18.04, macos-latest, windows-latest]
-        version: [ '12.x', '14.x', '16.x' ]
+        operating-system: [macos-latest]
+        version: [ '12.x' ]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Initial install
+    - name: Generate yarn file
       run: npm install
-    - name: Clean
+    - name: Remove dependencies
       shell: pwsh
-      run: |
-        Remove-Item node_modules -Force -Recurse
-        npm cache clean --force
-    - uses: dmitry-shibanov/setup-node@add-caching
+      run: Remove-Item node_modules -Force -Recurse
+    - uses: akv-platform/setup-node@add-caching-for-node-dependencies
       with:
         node-version: ${{ matrix.version }}
-        cache: npm
     - name: Node version
       shell: pwsh
       run: node --version
@@ -33,3 +30,9 @@ jobs:
       run: npm --version
     - name: Install dependencies
       run: npm install
+    - name: upload screenshot
+      if: ${{ always() }}
+      uses: actions/upload-artifact@master
+      with:
+        name: package-lock.json
+        path: package-lock.json
